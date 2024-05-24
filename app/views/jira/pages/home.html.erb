@@ -1,0 +1,9 @@
+<div class="row">
+  <div class="col-md-3"></div>
+    <div class="col-md-6 text-center mt-4 centered-column-container" style="height: 400px;">
+      <%= button_to 'Jira', import_jira_path(workspace_id: 7489, theme: "dark", token: "UzHKV2AeVYzNznwC8Uq"), method: :post, class: 'btn btn-primary btn-lg next-button' %>
+      <%= render 'jira/shared/alerts' %>
+    </div>
+  </div>
+  <div class="col-md-3"></div>
+</div>

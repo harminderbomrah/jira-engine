@@ -1,0 +1,102 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+ .container {
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item {
+  padding: 20px; /* unified padding */
+  margin-bottom: 0.5rem;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,.125);
+  box-shadow: 0 5px 15px rgba(0,0,0,.1); /* adding shadow for depth */
+}
+
+.list-group-item:hover {
+  background-color: #f1f1f1; /* light grey background on hover for interactivity */
+}
+
+.label {
+  font-weight: bold;
+  color: #007bff; /* consistent blue color for labels */
+}
+.centered-column-container{
+  background-color: #262B2F !important;
+  display: flex !important; 
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.text-white{
+  color: white !important;
+}
+.auth-button{
+  background-color: #9929BD  !important;
+  border-color: transparent !important;
+}
+.space-between-container{
+  display: flex !important;
+  justify-content: space-between  !important;
+  width: 100% !important;
+}
+.cancel-button{
+  background-color: #9929BD !important;
+  border-color: transparent  !important;
+  flex-grow: 1  !important;
+  margin-right: 5px !important;
+}
+.next-button{
+  background-color: #9929BD !important;
+  border-color: transparent !important;
+  flex-grow: 1 !important;
+  margin-left: 5px !important;
+}
+.list-group-setting{
+  background-color: transparent !important;
+  border: 1px solid #9929BD !important;
+  color: white !important;
+}
+.edit-button{
+  background-color: #9929BD !important;
+  border-color: transparent !important;
+}
+.prefix-field{
+  background-color: transparent !important;
+  border: 3px solid #402688 !important;
+  color:white !important;
+}
+.title-field{
+  background-color: transparent !important;
+  border: 3px solid #402688 !important;
+  margin-left:12px !important;
+  color:white !important;
+}
+.work-space-field{
+  margin-right: 52px !important;
+}
+.alert-info {
+  color: white !important;
+  background-color: transparent !important;
+  border-color: transparent  !important;
+}
+.next1-button{
+  background-color: #9929BD !important;
+  border-color: transparent !important;
+  margin-left: 5px !important;
+}

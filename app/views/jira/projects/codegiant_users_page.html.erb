@@ -1,0 +1,36 @@
+
+<%= javascript_include_tag 'codegiant_users_page' %>
+<div class="row">
+  <div class="col-md-3"></div>
+  <div class="container-question col-md-6 text-center mt-4 centered-column-container">
+    <h4 class="mt-4 text-white">Users Mapping</h4>
+    <%= form_tag update_issue_user_path, method: :post, id: 'userMappingForm' do %>
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <%= hidden_field_tag :id, params[:project_id] %>
+      <% @jira_users.each_with_index do |user, index| %>
+        <div class="row mb-2 mt-4">
+          <div class="col">
+            <select name="jira_user_ids[]" class="form-control">
+              <option value="<%= user.id %>"><%= user.display_name %></option>
+            </select>
+          </div>
+          <div class="col">
+            <select name="code_giant_user_ids[]" class="form-control">
+              <option value="">Unassigned</option>
+              <% @code_giant_users.each do |cg_user| %>
+                <option value="<%= cg_user.id %>"><%= cg_user.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+    <p style="color: orange" class="mt-4"><i class="fas fa-exclamation-triangle"></i><b> Note:</b> If you select a user who is not in selected project, his issues will not mapped.</p>
+    <div class="mt-4 mb-4 space-between-container">
+      <%= link_to 'Cancel', project_path(params[:project_id]), method: :get, class: 'btn btn-primary btn-lg next1-button' %>
+      <%= render 'jira/shared/alerts' %>
+      <button type="button" id="submitFormButton" class="btn btn-primary btn-lg next1-button">Done</button>
+    </div>
+  </div>
+  <div class="col-md-3"></div>
+</div>
