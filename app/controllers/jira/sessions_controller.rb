@@ -24,12 +24,11 @@ module Jira
   
   
     def failure
-      redirect_to import_jira_path, alert: "Authentication failed, please try again."
+      redirect_to pages_home_path, alert: "Authentication failed, please try again."
     end
   
     def logout
       reset_session
-      redirect_to import_jira_path, notice: 'You have been successfully logged out.'
     end
   end
 end

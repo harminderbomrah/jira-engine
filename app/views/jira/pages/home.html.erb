@@ -1,9 +1,162 @@
+<%= javascript_include_tag 'home' %>
+
 <div class="row">
   <div class="col-md-3"></div>
-    <div class="col-md-6 text-center mt-4 centered-column-container" style="height: 400px;">
-      <%= button_to 'Jira', import_jira_path(workspace_id: 7489, theme: "dark", token: "UzHKV2AeVYzNznwC8Uq"), method: :post, class: 'btn btn-primary btn-lg next-button' %>
-      <%= render 'jira/shared/alerts' %>
-    </div>
+  <div class="col-md-6 text-center mt-4 centered-column-container div-height">
+    <button type="button" class="btn btn-primary btn-lg jira-button" data-toggle="modal" data-target="#authModal">
+      Jira
+    </button>
+    <%= render 'jira/shared/alerts' %>
   </div>
   <div class="col-md-3"></div>
+</div>
+
+<!-- AuthModal -->
+<div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-color text-white">
+        <h5 class="modal-title" id="authModalLabel">Authorize with Jira</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-color">
+        <div id="alert-auth"></div>
+        <div class="text-center mt-4">
+          <% if current_user %>
+            <%= button_to 'Authorized', '/auth/atlassian_oauth2', id: 'authorize-btn', class: 'btn btn-primary btn-lg mt-4 auth-button', disabled: true %>
+          <% else %>
+            <%= button_to 'Authorize', '/auth/atlassian_oauth2', class: 'btn btn-primary btn-lg mt-4 auth-button' %>
+          <% end %>
+          <div class="mt-4 mb-4 space-between-container">
+            <button id="cancel-btn" class="btn btn-primary btn-lg cancel-button" <% if current_user %> <% else %>disabled<% end %>>Cancel</button>
+            <%= button_to 'Next', '#', id: 'next-button', class: 'btn btn-primary btn-lg next-button' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ProjectShowModal -->
+<div class="modal fade" id="projectShowModal" tabindex="-1" role="dialog" aria-labelledby="projectShowModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-color text-white">
+        <h5 class="modal-title" id="projectShowModalLabel">Select a Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-color">
+        <div id="alert-show"></div>
+        <div id="projects-container" class="text-center mt-4 centered-column-container"></div>
+        <div class="mt-4 mb-4 space-between-container">
+          <button type="button" class="btn btn-success edit-button" onclick="back_to_auth_modal()">Cancel</button>
+          <%= button_to 'Next', '#', class: 'btn btn-primary btn-lg next-button', id: 'fetch-issues-button', onclick: "showAlertAndDisableButton()" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UpdateProjectModal --> 
+<div class="modal fade" id="updateProjectModal" tabindex="-1" role="dialog" aria-labelledby="updateProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-color text-white">
+        <h5 class="modal-title" id="updateProjectModalLabel">Project <span id="modalProjectName">Project Name</span> Importing</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-color">
+        <div id="alert-update-project"></div>
+        <div class="container-question text-center mt-4 bg-color">
+          <%= form_with(model: @project, url: update_importing_project_path, remote: true) do |form| %>
+            <%= form.hidden_field :project_id, id: 'project-id-field' %>
+
+            <div class="field mt-4">
+              <%= form.label :prefix, "Prefix", class: "text-white" %>
+              <%= form.text_field :prefix, class: "restricted-input prefix-field" %>
+            </div>
+            <div class="field">
+              <%= form.label :title, "Title", class: "text-white" %>
+              <%= form.text_field :codegiant_title, class: "title-field", id: 'project-title-field' %>
+            </div>
+
+            <div class="mt-4 mb-4 space-between-container">
+              <button type="button" class="btn btn-success edit-button" onclick="back_to_project_show()">Cancel</button>
+              <button type="submit" class="btn btn-success edit-button">Next</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IssueFieldMappingModal -->
+<div class="modal fade" id="fieldMappingModal" tabindex="-1" role="dialog" aria-labelledby="fieldMappingModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-color text-white">
+        <h5 class="modal-title" id="fieldMappingModalLabel">Issue Fields Mapping</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-color">
+        <div id="alert-field-mapping"></div>
+        <div class="container-question text-center mt-4 centered-column-container">
+          <%= form_with model: Jira::FieldMapping.new, url: field_mappings_path(project_id: params[:id]), method: :post, id: 'mappingForm' do |form| %>
+            <%= form.hidden_field :project_id, id: 'project_id_hidden_field' %>
+            <div id="field_mappings_modal">
+              <div class="row field_mapping mt-4 mb-2">
+                <div class="col mt-2">
+                  <%= form.label :jira_field_name, 'JIRA Fields', class: "text-white" %>
+                </div>
+                <div class="col mt-2">
+                  <%= form.label :codegiant_field_name, 'Codegiant Fields', class: "text-white" %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <div class="mt-4 mb-4 space-between-container">
+            <button type="button" class="btn btn-success edit-button" onclick="back_to_update_project()">Cancel</button>
+            <%= button_to 'Next', '#', class: 'btn btn-primary btn-lg next-button', id: 'fetch-codegiant-user-button', onclick: "showAlertAndSubmitForm()", data: { project_id: 'selectedProjectId' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UserMappingModal -->
+<div class="modal fade" id="userMappingModal" tabindex="-1" role="dialog" aria-labelledby="userMappingModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-color text-white">
+        <h5 class="modal-title" id="userMappingModalLabel">User Mapping</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body user-mapping-modal bg-color">
+        <div id="alert-show"></div>
+        <div class="container-question text-center mt-4 centered-column-container">
+          <%= form_tag update_issue_user_path, method: :post, id: 'userMappingForm' do %>
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <%= hidden_field_tag :project_id, id: 'project_id23' %>
+          <% end %>
+          <p class="mt-4 text-orange"><i class="fas fa-exclamation-triangle"></i><b> Note:</b> If you select a user who is not in the selected project, their issues will not be mapped.</p>
+        </div>
+        <div class="mt-4 mb-4 space-between-container">
+          <button type="button" class="btn btn-success edit-button" onclick="back_to_issue_mapping()">Cancel</button>
+          <button type="button" id="submitFormButton" class="btn btn-primary btn-lg jira-button">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

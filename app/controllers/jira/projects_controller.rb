@@ -1,25 +1,18 @@
 module Jira
   class ProjectsController < ApplicationController
-    before_action :authenticate_user!, only: %i[index fetch_latest_projects]
-    before_action :set_project, only: %i[show update_issue_user update_and_fetch fetch_assignees]
-    skip_before_action :verify_authenticity_token, only: %i[update_importing_project fetch_codegiant_users fetch_assignees]
-    after_action :update_and_fetch, only: %i[update_issue_user]
-    def index
-      @projects = current_user.projects.all
-    end
-  
-    def show
-    end
+    before_action :set_project, only: %i[fetch_assignees]
   
     def fetch_latest_projects
-      flash_message = FetchJiraProjectsJob.perform_now(current_user)
-      flash[:notice] = flash_message if flash_message.present?
-      redirect_to projects_path
+      FetchJiraProjectsJob.perform_now(current_user)
+      if current_user.projects.present?
+        render json: { projects: current_user.projects }, status: :ok
+      else
+        render json: { error: 'Failed to fetch projects' }, status: :unprocessable_entity
+      end
     end
   
     def fetch_assignees
       JiraIssueService.new(current_user.jira_access_token, @project&.project_id, current_user.jira_site_id).fetch_assignees
-      return :ok
     end
   
     def edit_importing_project
@@ -27,23 +20,21 @@ module Jira
     end
   
     def update_importing_project
-      @project = Project.find(params[:project][:project_id])
-      @project.update(codegiant_title: params[:project][:codegiant_title], prefix: params[:project][:prefix])
-      flash[:notice] = 'Project was updated successfully.'
-      redirect_to @project
+      @project = Project.find(params[:project_id])
+      @project.update(codegiant_title: params[:codegiant_title], prefix: params[:prefix])
     end
   
     def fetch_codegiant_users
-      FetchCodegiantUsersJob.perform_now()
-    end
-  
-    def codegiant_users_page
+      FetchCodegiantUsersJob.perform_now
       @jira_users = JiraUser.all
       @code_giant_users = CodeGiantUser.all
+      respond_to do |format|
+        format.json { render json: { jira_users: @jira_users, code_giant_users: @code_giant_users } }
+      end
     end
   
     def update_issue_user
-      project_id = params[:id]
+      project_id = params[:project_id]
       jira_user_ids = params[:jira_user_ids]
       code_giant_user_ids = params[:code_giant_user_ids]
   
@@ -59,13 +50,13 @@ module Jira
             user_mapping.update(code_giant_user_id: code_giant_user_id)
           end
         end
-  
+        @project = Project.find_by(id: params[:project_id])
+        FetchJiraIssuesJob.perform_later(current_user, @project&.project_id, project_id, "UzHKV2AeVYzNznwC8Uq", 7489)
         flash[:success] = "User mappings updated successfully."
       else
         flash[:error] = "No user mappings provided."
       end
-  
-      redirect_to pages_home_path 
+      redirect_to pages_home_path
     end
   
     def destroy
@@ -75,18 +66,15 @@ module Jira
       redirect_to projects_path
     end
   
-    def update_and_fetch
-      FetchJiraIssuesJob.perform_later(current_user, @project&.project_id, params[:id], session[:token], session[:workspace_id])
+    def check_authentication
+      if session[:user_id]
+        render json: { authenticated: true }, status: :ok
+      else
+        render json: { authenticated: false }, status: :unauthorized
+      end
     end
   
     private
-  
-    def authenticate_user!
-      unless session[:user_id]
-        flash[:alert] = "You must be logged in to access this page."
-        redirect_to import_jira_path
-      end
-    end
   
     def set_project
       @project = current_user.projects.find(params[:id])

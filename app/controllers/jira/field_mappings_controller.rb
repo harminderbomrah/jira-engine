@@ -2,12 +2,12 @@ module Jira
 # app/controllers/field_mappings_controller.rb
   class FieldMappingsController < ApplicationController
     def create
-      project = Project.find(params[:project_id])
+      project = Project.find(params[:field_mapping][:project_id])
       field_mapping_params = params.require(:field_mapping).permit(codegiant_field: [], jira_field: [])
-  
+
       # Initialize a new hash for storing the mappings
       mapping_hash = {}
-  
+
       # Iterate over the parameters and populate the mapping hash
       field_mapping_params[:codegiant_field].zip(field_mapping_params[:jira_field]).each do |codegiant_field, jira_field|
         if codegiant_field == 'Description'
@@ -19,15 +19,10 @@ module Jira
           mapping_hash[codegiant_field] = jira_field
         end
       end
-  
+
       @field_mapping = project.field_mapping || FieldMapping.new(project: project)
       @field_mapping.mapping = mapping_hash
-  
-      if @field_mapping.save
-        redirect_to codegiant_users_page_path(params[:project_id]), notice: 'Field mapping was successfully saved.'
-      else
-        render :new
-      end
+      @field_mapping.save
     end
   end
 end
