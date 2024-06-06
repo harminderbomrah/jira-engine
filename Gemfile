@@ -6,7 +6,7 @@ gemspec
 
 gem "puma"
 
-gem 'sqlite3', '< 2.0'
+gem 'pg'
 
 gem "sprockets-rails"
 
@@ -64,3 +64,4 @@ gem 'httparty'
 gem 'rest-client'
 gem 'json'
 gem 'dotenv'
+gem 'faraday'

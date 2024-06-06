@@ -24,6 +24,7 @@ module Jira
             jql: "project = '#{@project_id}'",
             startAt: start_at,
             maxResults: max_results,
+            fields: 'summary,status,description,creator,reporter,created,updated,priority,issuetype,assignee,attachment', # Ensure assignee field is included
             expand: 'comment' # Include comments in the response
           }
         })
@@ -64,7 +65,8 @@ module Jira
             comments: comments_data, # Include comments data in the issue hash
             # histories: histories_data, # Include histories data in the issue hash
             time_originalestimate: issue['fields']['timeoriginalestimate'] || nil, # Extract timeoriginalestimate
-            time_estimate: issue['fields']['timeestimate'] || nil  # Extract timeestimate
+            time_estimate: issue['fields']['timeestimate'] || nil, # Extract timeestimate
+            attachments: extract_attachments(issue['fields']['attachment'])
           }
         end
   
@@ -158,6 +160,18 @@ module Jira
       paragraph['content'].map do |item|
         item['text'] if item['type'] == 'text'
       end.compact.join("\n")
+    end
+  
+    def extract_attachments(attachments)
+      return [] unless attachments.is_a?(Array)
+  
+      attachments.map do |attachment|
+        {
+          id: attachment['id'],
+          filename: attachment['filename'],
+          url: attachment['content']
+        }
+      end
     end
   end
 end

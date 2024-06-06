@@ -111,6 +111,31 @@ module Jira
       execute_query(query, variables)
     end
   
+    def upload_project_file(task_id, file_path, file_name, file_size)
+      @task_id = task_id
+      @file_path = file_path
+      @file_name = file_name
+      @file_size = file_size
+      @url = URI("https://codegiant.io/graphql")
+      @auth_token = "UzHKV2AeVYzNznwC8Uq" # It's better to store this in environment variables
+      https = Net::HTTP.new(@url.host, @url.port)
+      https.use_ssl = true
+  
+      request = Net::HTTP::Post.new(@url)
+      request["Authorization"] = "Bearer #{@auth_token}"
+  
+      form_data = [
+        ['operations', operations_payload],
+        ['map', '{"0": ["variables.attachment"]}'],
+        ['0', File.open(@file_path)]
+      ]
+  
+      request.set_form form_data, 'multipart/form-data'
+  
+      response = https.request(request)
+      parse_response(response)
+    end
+  
     private
   
     def execute_query(query, variables = {})
@@ -136,6 +161,36 @@ module Jira
         { "errors" => "HTTParty Error: #{e.message}" }
       rescue StandardError => e
         { "errors" => "Standard Error: #{e.message}" }
+    end
+  
+    def operations_payload
+      {
+        query: <<~GRAPHQL,
+          mutation UploadProjectFile($taskId: ID!, $fileName: String!, $fileSize: Int!, $attachment: Upload!) {
+            uploadProjectFile(taskId: $taskId, fileName: $fileName, fileSize: $fileSize, attachment: $attachment) {
+              id
+              fileName
+              fileSize
+              attachmentUrl
+            }
+          }
+        GRAPHQL
+        variables: {
+          taskId: @task_id,
+          fileName: @file_name,
+          fileSize: @file_size,
+          attachment: nil
+        }
+      }.to_json
+    end
+  
+    def parse_response(response)
+      body = JSON.parse(response.body)
+      if response.is_a?(Net::HTTPSuccess)
+        body["data"]["uploadProjectFile"]
+      else
+        body["errors"] || "An error occurred"
+      end
     end
   end
 end

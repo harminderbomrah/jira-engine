@@ -6,6 +6,8 @@ require 'redis'
 require 'rest-client'
 require 'json'
 require 'dotenv/load'
+require 'faraday'
+require 'pg'
 require "jira/version"
 require "jira/engine"
 

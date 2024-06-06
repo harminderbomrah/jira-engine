@@ -12,7 +12,7 @@ module Jira
         name: auth['info']['name'],
         jira_access_token: auth['credentials']['token'],
         jira_refresh_token: auth['credentials']['refresh_token'],
-        token_expires_at: Time.at(auth['credentials']['expires_at']).to_datetime,
+        token_expires_at: Time.current + 1.days,
         jira_site_url: auth['extra']['raw_info']['site']['url'],
         jira_site_id: auth['extra']['raw_info']['site']['id']
       )
