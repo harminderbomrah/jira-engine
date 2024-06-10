@@ -1,10 +1,10 @@
 class CreateHistories < ActiveRecord::Migration[7.1]
   def change
-    create_table :histories do |t|
+    create_table :cg_histories do |t|
       t.string :author
       t.datetime :created_at
       t.json :items, null: false, default: {}
-      t.references :issue, null: false, foreign_key: true
+      t.references :cg_issues, null: false, foreign_key: true
     end
   end
 end

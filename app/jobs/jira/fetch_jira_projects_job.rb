@@ -17,7 +17,7 @@ module Jira
               project_key: project_data['key'],
               name: project_data['name'],
               url: project_data['self'],
-              user_id: current_user.id
+              cg_users_id: current_user.id
             )
           end
           Rails.logger.info "Latest projects fetched successfully."

@@ -1,5 +1,5 @@
 class AddJiraUserIdToIssues < ActiveRecord::Migration[7.1]
   def change
-    add_column :issues, :jira_user_id, :integer
+    add_column :cg_issues, :jira_user_id, :integer
   end
 end

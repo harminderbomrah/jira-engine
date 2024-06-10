@@ -1,6 +1,6 @@
 class CreateProjectTypes < ActiveRecord::Migration[7.1]
   def change
-    create_table :project_types do |t|
+    create_table :cg_project_types do |t|
       t.integer :project_id
       t.integer :type_id
       t.string :title

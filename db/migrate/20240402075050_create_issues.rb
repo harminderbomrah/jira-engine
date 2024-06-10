@@ -1,6 +1,6 @@
 class CreateIssues < ActiveRecord::Migration[7.1]
   def change
-    create_table :issues do |t|
+    create_table :cg_issues do |t|
       t.string :key
       t.string :summary
       t.text :description
@@ -13,7 +13,7 @@ class CreateIssues < ActiveRecord::Migration[7.1]
       t.string :priority
       t.string :issue_type
       t.integer :jira_issue_id, index: { unique: true }
-      t.references :project, null: false, foreign_key: true
+      t.references :cg_projects, null: false, foreign_key: true
       t.timestamps
     end
   end

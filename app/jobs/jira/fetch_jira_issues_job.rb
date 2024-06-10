@@ -39,7 +39,7 @@ module Jira
                   issue.assignee_name = jira_user_data&.[](:display_name)
                   issue.jira_project_id = issue_data[:jira_project_id]
                   issue.issue_type = issue_data[:issue_type]
-                  issue.project_id = id
+                  issue.cg_projects_id = id
                   issue.jira_user_id = jira_user_data ? jira_user&.id : nil
                   issue.due_date = issue_data[:duedate]
                   issue.estimated_time = issue_data[:time_estimate]
@@ -132,7 +132,7 @@ module Jira
             Rails.logger.info("Comment with ID #{comment['id']} updated successfully for issue ID #{issue.id}.")
           else
             issue.comments.create!(
-              issue_id: issue.id,
+              cg_issue_id: issue.id,
               id: comment['id'],
               author: comment['author']['displayName'],
               body: (comment['body'].is_a?(Hash) ? formatted_body(comment['body']) : comment['body']),

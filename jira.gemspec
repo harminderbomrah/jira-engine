@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
 
-  spec.add_dependency "rails", ">= 7.1.3.2"
+  spec.add_dependency "rails", ">= 7.0.8", "< 8.0"
   spec.add_dependency('omniauth-atlassian-oauth2')
   spec.add_dependency('omniauth-rails_csrf_protection')
   spec.add_dependency('httparty')

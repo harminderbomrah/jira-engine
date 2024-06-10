@@ -1,6 +1,6 @@
-class CreateUsers < ActiveRecord::Migration[7.1]
+class CreateAuthUsers < ActiveRecord::Migration[7.1]
   def change
-    create_table :users do |t|
+    create_table :cg_users do |t|
       t.string :email
       t.string :name
       t.string :jira_uid
