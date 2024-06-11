@@ -1,4 +1,4 @@
-class CreateHistories < ActiveRecord::Migration[7.1]
+class CreateHistories < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_histories do |t|
       t.string :author

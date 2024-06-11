@@ -1,4 +1,4 @@
-class AddEstimationAndOriginalTimeToIssues < ActiveRecord::Migration[7.1]
+class AddEstimationAndOriginalTimeToIssues < ActiveRecord::Migration[7.0]
   def change
     add_column :cg_issues, :estimated_time, :integer
     add_column :cg_issues, :actual_time, :integer

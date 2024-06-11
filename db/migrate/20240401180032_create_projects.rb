@@ -1,4 +1,4 @@
-class CreateProjects < ActiveRecord::Migration[7.1]
+class CreateProjects < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_projects do |t|
       t.string :project_id

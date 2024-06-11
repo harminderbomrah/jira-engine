@@ -1,4 +1,4 @@
-class CreateComments < ActiveRecord::Migration[7.1]
+class CreateComments < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_comments do |t|
       t.integer :cg_issue_id

@@ -1,4 +1,4 @@
-class CreateProjectPriorities < ActiveRecord::Migration[7.1]
+class CreateProjectPriorities < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_project_priorities do |t|
       t.integer :project_id

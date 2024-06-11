@@ -1,4 +1,4 @@
-class CreateUserMappings < ActiveRecord::Migration[7.1]
+class CreateUserMappings < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_user_mappings do |t|
       t.integer :jira_user_id, null: false

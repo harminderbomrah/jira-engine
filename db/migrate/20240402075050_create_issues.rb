@@ -1,4 +1,4 @@
-class CreateIssues < ActiveRecord::Migration[7.1]
+class CreateIssues < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_issues do |t|
       t.string :key

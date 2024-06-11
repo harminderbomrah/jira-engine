@@ -3,16 +3,16 @@ module Jira
     before_action :set_project, only: %i[fetch_assignees]
   
     def fetch_latest_projects
-      FetchJiraProjectsJob.perform_now(current_user)
-      if current_user.projects.present?
-        render json: { projects: current_user.projects }, status: :ok
+      FetchJiraProjectsJob.perform_now(current_jira_user)
+      if current_jira_user.projects.present?
+        render json: { projects: current_jira_user.projects }, status: :ok
       else
         render json: { error: 'Failed to fetch projects' }, status: :unprocessable_entity
       end
     end
   
     def fetch_assignees
-      JiraIssueService.new(current_user.jira_access_token, @project&.project_id, current_user.jira_site_id).fetch_assignees
+      JiraIssueService.new(current_jira_user.jira_access_token, @project&.project_id, current_jira_user.jira_site_id).fetch_assignees
     end
   
     def edit_importing_project
@@ -51,7 +51,7 @@ module Jira
           end
         end
         @project = Project.find_by(id: params[:project_id])
-        FetchJiraIssuesJob.perform_later(current_user, @project&.project_id, project_id, "UzHKV2AeVYzNznwC8Uq", 7489)
+        FetchJiraIssuesJob.perform_later(current_jira_user, @project&.project_id, project_id, "UzHKV2AeVYzNznwC8Uq", 7489)
         flash[:success] = "User mappings updated successfully."
       else
         flash[:error] = "No user mappings provided."
@@ -77,7 +77,7 @@ module Jira
     private
   
     def set_project
-      @project = current_user.projects.find(params[:id])
+      @project = current_jira_user.projects.find(params[:id])
     end
   end
 end

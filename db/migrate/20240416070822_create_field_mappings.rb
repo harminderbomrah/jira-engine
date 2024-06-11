@@ -1,4 +1,4 @@
-class CreateFieldMappings < ActiveRecord::Migration[7.1]
+class CreateFieldMappings < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_field_mappings do |t|
       t.json :mapping, null: false, default: {}

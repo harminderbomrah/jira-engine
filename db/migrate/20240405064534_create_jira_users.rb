@@ -1,4 +1,4 @@
-class CreateJiraUsers < ActiveRecord::Migration[7.1]
+class CreateJiraUsers < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_jira_users do |t|
       t.string :account_id

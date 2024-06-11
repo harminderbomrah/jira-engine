@@ -1,4 +1,4 @@
-class CreateCodeGiantUsers < ActiveRecord::Migration[7.1]
+class CreateCodeGiantUsers < ActiveRecord::Migration[7.0]
   def change
     create_table :cg_code_giant_users do |t|
       t.string :graphql_id
