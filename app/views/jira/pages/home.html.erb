@@ -25,9 +25,9 @@
         <div id="alert-auth"></div>
         <div class="text-center mt-4">
           <% if current_jira_user %>
-            <%= button_to 'Authorized', '/auth/atlassian_oauth2', id: 'authorize-btn', class: 'btn btn-primary btn-lg mt-4 auth-button', disabled: true %>
+            <%= button_to 'Authorized', '/jira/auth/atlassian_oauth2', id: 'authorize-btn', class: 'btn btn-primary btn-lg mt-4 auth-button', disabled: true %>
           <% else %>
-            <%= button_to 'Authorize', '/auth/atlassian_oauth2', class: 'btn btn-primary btn-lg mt-4 auth-button' %>
+            <%= button_to 'Authorize', '/jira/auth/atlassian_oauth2', class: 'btn btn-primary btn-lg mt-4 auth-button' %>
           <% end %>
           <div class="mt-4 mb-4 space-between-container">
             <button id="cancel-btn" class="btn btn-primary btn-lg cancel-button" <% if current_jira_user %> <% else %>disabled<% end %>>Cancel</button>
