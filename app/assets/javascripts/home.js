@@ -4,7 +4,7 @@ $(document).ready(function() {
   $('#cancel-btn').click(function(event) {
     event.preventDefault();
     $.ajax({
-      url: '/jira/logout',
+      url: '/-/jira/logout',
       type: 'DELETE',
       headers: {
         'X-CSRF-Token': csrfToken
@@ -19,7 +19,7 @@ $(document).ready(function() {
         setTimeout(function() {
           successAlertDiv.style.display = 'none';
         }, 3000);
-        window.location.href = '/jira/pages/home';
+        window.location.href = '/-/jira/pages/home';
       },
       error: function(xhr, status, error) {
         const errorAlertDiv = document.createElement('div');
@@ -38,7 +38,7 @@ $(document).ready(function() {
   $('#next-button').click(function(event) {
     event.preventDefault(); 
     $.ajax({
-      url: '/jira/check_authentication',
+      url: '/-/jira/check_authentication',
       method: 'GET',
       headers: {
         'X-CSRF-Token': csrfToken
@@ -48,7 +48,7 @@ $(document).ready(function() {
           var fetchingProjectAlert = $('<div class="alert alert-info" role="alert">Fetching projects, please wait...</div>');
           $('#alert-auth').append(fetchingProjectAlert);
           $.ajax({
-            url: '/jira/projects/fetch_latest_projects',
+            url: '/-/jira/projects/fetch_latest_projects',
             type: 'POST',
             headers: {
               'X-CSRF-Token': csrfToken
@@ -221,7 +221,7 @@ function showAlertAndDisableButton() {
 
   $.ajax({
     type: 'POST',
-    url: `/jira/projects/${projectId}/fetch_assignees`,
+    url: `/-/jira/projects/${projectId}/fetch_assignees`,
     data: { project_id: projectId },
     headers: {
       'X-CSRF-Token': csrfToken
@@ -375,7 +375,7 @@ function showAlert() {
     
   $.ajax({
     type: 'POST',
-    url: `/jira/fetch_codegiant_users`,
+    url: `/-/jira/fetch_codegiant_users`,
     data: { project_id: projectId },
     headers: {
       'X-CSRF-Token': csrfToken
