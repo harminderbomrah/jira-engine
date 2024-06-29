@@ -6,7 +6,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            ENV['JIRA_CLIENT_SECRET'],
            scope: "offline_access read:jira-user read:jira-work",
            prompt: "consent",
-           path_prefix: ENV[JIRA_AUTH_URL],
+           path_prefix: ENV['JIRA_AUTH_URL'],
            provider_ignores_state: true
 
   # Specify what should happen if OmniAuth encounters a failure
