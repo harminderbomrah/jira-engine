@@ -28,7 +28,23 @@ module Jira
     end
   
     def logout
+      preserve_session_values
       reset_session
+      restore_session_values
+    end
+
+    private
+
+    def preserve_session_values
+      @workspace_id = session[:workspace_id]
+      @token = session[:token]
+      @theme = session[:theme]
+    end
+
+    def restore_session_values
+      session[:workspace_id] = @workspace_id
+      session[:token] = @token
+      session[:theme] = @theme
     end
   end
 end
