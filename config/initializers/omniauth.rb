@@ -13,6 +13,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   OmniAuth.config.on_failure = Proc.new do |env|
     # Use the SessionsController's failure action
     # Make sure you have defined the 'sessions#failure' action in your controller
-    SessionsController.action(:failure).call(env)
+    Jira::SessionsController.action(:failure).call(env)
   end
 end
