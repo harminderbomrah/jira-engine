@@ -51,7 +51,7 @@ module Jira
           end
         end
         @project = Project.find_by(id: params[:project_id])
-        FetchJiraIssuesJob.perform_later(current_jira_user, @project&.project_id, project_id, "UzHKV2AeVYzNznwC8Uq", 7489)
+        FetchJiraIssuesJob.perform_later(current_jira_user, @project&.project_id, project_id, session[:token], session[:workspace_id])
         flash[:success] = "User mappings updated successfully."
       else
         flash[:error] = "No user mappings provided."
