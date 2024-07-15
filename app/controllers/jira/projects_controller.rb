@@ -21,11 +21,11 @@ module Jira
   
     def update_importing_project
       @project = Project.find(params[:project_id])
-      @project.update(codegiant_title: params[:codegiant_title], prefix: params[:prefix])
+      @project.update(codegiant_title: params[:codegiant_title], prefix: params[:prefix], project_type: params[:project_type] )
     end
   
     def fetch_codegiant_users
-      FetchCodegiantUsersJob.perform_now
+      FetchCodegiantUsersJob.perform_now(session[:token])
       @jira_users = JiraUser.all
       @code_giant_users = CodeGiantUser.all
       respond_to do |format|

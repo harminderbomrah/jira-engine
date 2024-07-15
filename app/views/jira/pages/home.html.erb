@@ -85,6 +85,10 @@
               <%= form.label :title, "Title", class: "text-white" %>
               <%= form.text_field :codegiant_title, class: "title-field", id: 'project-title-field' %>
             </div>
+            <div class="field">
+              <%= form.label :project_type, "Project Type", class: "text-white" %>
+              <%= form.text_field :project_type, class: "title-field", value: session[:project_type], readonly: true %>
+            </div>
 
             <div class="mt-4 mb-4 space-between-container">
               <button type="button" class="btn btn-success edit-button" onclick="back_to_project_show()">Cancel</button>

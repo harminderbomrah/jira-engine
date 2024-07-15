@@ -9,7 +9,7 @@ module Jira
       unless project.code_giant_project_id.present?
         project_info = {
           workspace_id: work_space_id,
-          project_type: "scrum",
+          project_type: project.project_type,
           tracking_type: "time",
           prefix: project.prefix,
           title: project.codegiant_title
@@ -75,14 +75,14 @@ module Jira
             issues = project.issues.where(assignee_name: display_name).or(project.issues.where(assignee_name: nil))
             
             issues.each do |issue|
-              process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, code_giant_user_id)
+              process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, code_giant_user_id, token)
             end
           end
         else
           issues = project.issues.where(assignee_name: nil)
   
           issues.each do |issue|
-            process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, nil)
+            process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, nil, token)
           end
         end
       end
@@ -135,7 +135,7 @@ module Jira
       end
     end
   
-    def process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, code_giant_user_id)
+    def process_issue(issue, project, created_project_id, field_mappings, graphql_service, id_to_graphql_id_mapping, code_giant_user_id, token)
       status_mapping = {
         "To Do" => "open",
         "Open" => "open",
@@ -201,7 +201,8 @@ module Jira
               issue&.code_giant_task_id, # Assuming this is the task ID where the file needs to be attached
               ActiveStorage::Blob.service.path_for(attachment.key),
               attachment&.blob&.filename.to_s,
-              attachment&.blob&.byte_size
+              attachment&.blob&.byte_size,
+              token
             )
           end
           create_comments_for_issue(issue, graphql_service, created_task_id)

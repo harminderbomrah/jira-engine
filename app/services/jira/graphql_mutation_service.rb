@@ -2,7 +2,7 @@ require 'httparty'
 module Jira
   class GraphqlMutationService
     include HTTParty
-    base_uri 'https://codegiant.io/graphql'
+    base_uri ENV['BASE_URL']
   
     def initialize(token)
       @headers = {
@@ -111,13 +111,13 @@ module Jira
       execute_query(query, variables)
     end
   
-    def upload_project_file(task_id, file_path, file_name, file_size)
+    def upload_project_file(task_id, file_path, file_name, file_size, token)
       @task_id = task_id
       @file_path = file_path
       @file_name = file_name
       @file_size = file_size
-      @url = URI("https://codegiant.io/graphql")
-      @auth_token = "UzHKV2AeVYzNznwC8Uq" # It's better to store this in environment variables
+      @url = URI("#{ENV['BASE_URL']}")
+      @auth_token =  token # It's better to store this in environment variables
       https = Net::HTTP.new(@url.host, @url.port)
       https.use_ssl = true
   

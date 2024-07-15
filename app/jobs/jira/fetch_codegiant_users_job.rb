@@ -2,8 +2,8 @@ module Jira
   class FetchCodegiantUsersJob < ApplicationJob
     queue_as :default
 
-    def perform()
-      users_data = GraphqlService.query["data"]["me"]["workspaces"].flat_map do |workspace|
+    def perform(token)
+      users_data = GraphqlService.query(token)["data"]["me"]["workspaces"].flat_map do |workspace|
         workspace["projects"].flat_map do |project|
           project["collaborators"]["nodes"] if project["collaborators"].present?
         end

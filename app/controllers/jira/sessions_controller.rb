@@ -39,12 +39,14 @@ module Jira
       @workspace_id = session[:workspace_id]
       @token = session[:token]
       @theme = session[:theme]
+      @project_type = session[:project_type]
     end
 
     def restore_session_values
       session[:workspace_id] = @workspace_id
       session[:token] = @token
       session[:theme] = @theme
+      session[:project_type] = @project_type
     end
   end
 end

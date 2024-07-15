@@ -3,11 +3,10 @@ require 'httparty'
 module Jira
   class GraphqlService
     include HTTParty
-    base_uri 'https://codegiant.io/graphql'
+    base_uri ENV['BASE_URL']
   
-    def self.query
+    def self.query(token)
       query_string = <<-GRAPHQL
-      # Try to write your query here
       {
         me{
          workspaces{
@@ -37,7 +36,7 @@ module Jira
   
       headers = {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer MhtLNkKesvHxoqCZE3W"
+        "Authorization" => "Bearer #{token}"
       }
   
       options = {
