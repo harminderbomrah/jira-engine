@@ -9,7 +9,7 @@ module Jira
         session[:theme] = params[:theme]
         session[:project_type] = params[:project_type]
         
-        redirect_to pages_home_path
+        redirect_to pages_home_path and return
       end
     end
 
