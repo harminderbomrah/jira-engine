@@ -4,6 +4,11 @@ module Jira
     MAX_RETRIES = 3
   
     def perform(current_user, project_id, id, token, workspace_id)
+      job_status = ImportStatus.create(
+        userid: current_user.id,
+        status: 'in_progress',
+        start_time: Time.current
+      )
       access_token = current_user&.jira_access_token
       jira_site_id = current_user&.jira_site_id
       jira_service = JiraIssueService.new(access_token, project_id, jira_site_id)
@@ -56,7 +61,7 @@ module Jira
   
           Rails.logger.info('Issues fetched successfully.')
           @project = Project.find(id)
-          UpdateIssueUserJob.perform_now(@project, @project.user_mappings.all.pluck(:jira_user_id), @project.user_mappings.all.pluck(:code_giant_user_id), token, workspace_id)
+          UpdateIssueUserJob.perform_now(@project, @project.user_mappings.all.pluck(:jira_user_id), @project.user_mappings.all.pluck(:code_giant_user_id), token, workspace_id, job_status.id)
             @project.destroy
         else
           Rails.logger.info('No issues found.')

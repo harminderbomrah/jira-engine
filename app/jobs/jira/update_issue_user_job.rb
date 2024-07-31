@@ -2,7 +2,8 @@ module Jira
   class UpdateIssueUserJob < ApplicationJob
     queue_as :default
   
-    def perform(project, jira_user_ids, code_giant_user_ids, token, work_space_id)
+    def perform(project, jira_user_ids, code_giant_user_ids, token, work_space_id, job_id)
+      job_status = ImportStatus.find(job_id)
       graphql_service = GraphqlMutationService.new(token)
       id_to_graphql_id_mapping = CodeGiantUser.where(id: code_giant_user_ids).pluck(:id, :graphql_id).to_h
   
@@ -86,6 +87,10 @@ module Jira
           end
         end
       end
+      job_status.update(
+        status: 'completed',
+        end_time: Time.current
+      )
       Rails.logger.info "Tasks created and user mapping updated successfully."
     end
   
