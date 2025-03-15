@@ -15,7 +15,6 @@ module Jira
           projects {
             title
             id
-            projectType
             trackingType
             collaborators{
               nodes{
